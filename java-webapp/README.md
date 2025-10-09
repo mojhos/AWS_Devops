@@ -61,6 +61,7 @@ scalable-web-app/
 ## 💾 Database Setup
 
 1. **Install MySQL** (if not already installed)
+    Be sure that mysql server is accessible on it's IP address
 
 2. **Run the database schema**:
 ```bash
@@ -69,7 +70,7 @@ mysql -u root -p < db-schema.sql
 
 3. **Update database credentials** in `src/main/java/com/webapp/config/DatabaseConfig.java`:
 ```java
-private static final String DB_URL = "jdbc:mysql://localhost:3306/**put-your-db-name-here**?useSSL=false&serverTimezone=UTC";
+private static final String DB_URL = "jdbc:mysql://mysql_ip:3306/**put-your-db-name-here**?useSSL=false&serverTimezone=UTC";
 private static final String DB_USER = "root";
 private static final String DB_PASSWORD = "your_password";
 ```
