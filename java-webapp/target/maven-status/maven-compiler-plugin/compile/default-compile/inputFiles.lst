@@ -1,7 +1,0 @@
-/home/moj/projects/aws_devops/java-webapp/src/main/java/com/webapp/servlet/InputServlet.java
-/home/moj/projects/aws_devops/java-webapp/src/main/java/com/webapp/dao/MessageDAO.java
-/home/moj/projects/aws_devops/java-webapp/src/main/java/com/webapp/config/DatabaseConfig.java
-/home/moj/projects/aws_devops/java-webapp/src/main/java/com/webapp/servlet/DataServlet.java
-/home/moj/projects/aws_devops/java-webapp/src/main/java/com/webapp/servlet/HomeServlet.java
-/home/moj/projects/aws_devops/java-webapp/src/main/java/com/webapp/model/Message.java
-/home/moj/projects/aws_devops/java-webapp/src/main/java/com/webapp/listener/AppContextListener.java
