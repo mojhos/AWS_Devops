@@ -1,5 +1,5 @@
 # Stage 1: Create the final image with a web server
-FROM tomcat:10.1-jdk17-temurin
+FROM tomcat:9.0-jdk17
 LABEL maintainer="Mojtaba Hosseini <s,mojtaba.h65@gmail.com>"
 
 # Remove the default webapps (like the example web app)

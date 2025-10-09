@@ -1,0 +1,51 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Class files
+*.class
+
+# Jar/War/Ear files
+*.jar
+*.war
+*.ear
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*~
+*.bak
+*.swp
+*.swo
+*.tmp
+temp/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Any other files that should be ignored
+# e.g., sensitive configuration files not managed by Spring Cloud Config or similar
+# application.properties.local
+# application-dev.yml

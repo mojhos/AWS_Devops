@@ -7,9 +7,12 @@ import java.sql.SQLException;
 public class DatabaseConfig {
     
     // Database credentials - Update these with your MySQL settings
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/webapp_db?useSSL=false&serverTimezone=UTC";
-    private static final String DB_USER = "webapp_user";
-    private static final String DB_PASSWORD = "123&awscloud";
+    private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "localhost");
+    private static final String DB_PORT = System.getenv().getOrDefault("DB_PORT", "3306");
+    private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "webapp_db");
+    private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "webapp_user");
+    private static final String DB_PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "123&awscloud");
+    private static final String DB_URL = String.format("jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC", DB_HOST, DB_PORT, DB_NAME);
     
     // Connection pool settings
     private static final int MAX_POOL_SIZE = 10;
