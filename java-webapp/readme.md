@@ -85,7 +85,7 @@ private static final String DB_URL = "jdbc:mysql://your-rds-endpoint.region.rds.
 
 2. **Navigate to project directory**:
 ```bash
-cd scalable-web-app
+cd java-webapp
 ```
 
 3. **Build with Maven**:
