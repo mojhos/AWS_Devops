@@ -48,7 +48,7 @@ scalable-web-app/
 │           │   └── web.xml
 │           └── META-INF/
 ├── pom.xml
-└── database-schema.sql
+└── db-schema.sql
 ```
 
 ## 🚀 Prerequisites
@@ -64,19 +64,19 @@ scalable-web-app/
 
 2. **Run the database schema**:
 ```bash
-mysql -u root -p < database-schema.sql
+mysql -u root -p < db-schema.sql
 ```
 
 3. **Update database credentials** in `src/main/java/com/webapp/config/DatabaseConfig.java`:
 ```java
-private static final String DB_URL = "jdbc:mysql://localhost:3306/webapp_db?useSSL=false&serverTimezone=UTC";
+private static final String DB_URL = "jdbc:mysql://localhost:3306/**put-your-db-name-here**?useSSL=false&serverTimezone=UTC";
 private static final String DB_USER = "root";
 private static final String DB_PASSWORD = "your_password";
 ```
 
 For AWS RDS, update the DB_URL to your RDS endpoint:
 ```java
-private static final String DB_URL = "jdbc:mysql://your-rds-endpoint.region.rds.amazonaws.com:3306/webapp_db?useSSL=true&serverTimezone=UTC";
+private static final String DB_URL = "jdbc:mysql://your-rds-endpoint.region.rds.amazonaws.com:3306/**put-your-db-name-here**?useSSL=true&serverTimezone=UTC";
 ```
 
 ## 🔨 Building the Project
@@ -93,7 +93,7 @@ cd java-webapp
 mvn clean package
 ```
 
-This will create a WAR file in the `target/` directory: `scalable-web-app.war`
+This will create a WAR file in the `target/` directory: `webapp.war`
 
 ## 🖥️ Deployment
 
@@ -101,7 +101,7 @@ This will create a WAR file in the `target/` directory: `scalable-web-app.war`
 
 1. **Copy WAR file to Tomcat**:
 ```bash
-cp target/scalable-web-app.war /path/to/tomcat/webapps/
+cp target/webapp.war /path/to/tomcat/webapps/
 ```
 
 2. **Start Tomcat**:
@@ -112,7 +112,7 @@ cd /path/to/tomcat/bin
 
 3. **Access the application**:
 ```
-http://localhost:8080/scalable-web-app/
+http://localhost:8080/webapp/
 ```
 
 ### AWS Elastic Beanstalk Deployment
@@ -146,7 +146,7 @@ sudo yum install tomcat
 
 3. **Upload and deploy WAR file**:
 ```bash
-scp target/scalable-web-app.war ec2-user@your-ec2-ip:/var/lib/tomcat/webapps/
+scp target/webapp.war ec2-user@your-ec2-ip:/var/lib/tomcat/webapps/
 ```
 
 4. **Start Tomcat**:
@@ -203,10 +203,10 @@ All dependencies are managed through Maven (`pom.xml`):
 To test the application locally:
 
 1. Ensure MySQL is running
-2. Create the database using `database-schema.sql`
+2. Create the database using `db-schema.sql`
 3. Build the project: `mvn clean package`
 4. Deploy to local Tomcat
-5. Access `http://localhost:8080/scalable-web-app/`
+5. Access `http://localhost:8080/webapp/`
 6. Test the input form and data viewing functionality
 
 ## 🐛 Troubleshooting
@@ -214,7 +214,7 @@ To test the application locally:
 ### Database Connection Error
 - Check MySQL is running: `sudo systemctl status mysql`
 - Verify credentials in `DatabaseConfig.java`
-- Ensure database `webapp_db` exists
+- Ensure database `db-name` exists
 - Check firewall rules for port 3306
 
 ### ClassNotFoundException for MySQL Driver
@@ -262,7 +262,7 @@ phases:
       - mvn clean package
 artifacts:
   files:
-    - target/scalable-web-app.war
+    - target/webapp.war
 ```
 
 ## 📈 Monitoring and Logging
