@@ -24,8 +24,18 @@ pipeline {
         stage("build image") {
             steps {
                 script {
-                    dir('java-webapp') {
-                        gv.buildImage()
+                    withCredentials([
+                        // Use the class for AWS Credentials Binding
+                        [$class: 'AmazonWebServicesCredentialsBinding', 
+                         // Use the ID you set in jenkins server for aws credentials
+                         credentialsId: 'aws-cred',
+                         accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']
+                    ]) {
+                        // Change directory before calling the Groovy function
+                        dir('java-webapp') {
+                            gv.buildImage() 
+                        }
                     }
                 }
             }
