@@ -10,11 +10,11 @@ pipeline {
                 }
             }
         }
-        stage("build jar") {
+        stage("build War file") {
             steps {
                 script {
-                    echo "building jar"
-                    //gv.buildJar()
+                    echo "building War"
+                    gv.buildWar()
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     echo "building image"
-                    //gv.buildImage()
+                    gv.buildImage()
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     echo "deploying"
-                    //gv.deployApp()
+                    gv.deployApp()
                 }
             }
         }
