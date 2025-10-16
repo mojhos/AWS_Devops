@@ -6,8 +6,9 @@ pipeline {
         stage("init") {
             steps {
                 script {
-                    dir('java-webapp')
-                    gv = load "script.groovy"
+                    dir('java-webapp') {
+                        gv = load "script.groovy"
+                    }
                 }
             }
         }
