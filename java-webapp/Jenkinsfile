@@ -15,24 +15,27 @@ pipeline {
         stage("build War file") {
             steps {
                 script {
-                    echo "building War"
-                    gv.buildWar()
+                    dir('java-webapp') {
+                        gv.buildWar()
+                    }
                 }
             }
         }
         stage("build image") {
             steps {
                 script {
-                    echo "building image"
-                    gv.buildImage()
+                    dir('java-webapp') {
+                        gv.buildImage()
+                    }
                 }
             }
         }
         stage("deploy") {
             steps {
                 script {
-                    echo "deploying"
-                    gv.deployApp()
+                    dir('java-webapp') {
+                         gv.deployApp()
+                    }
                 }
             }
         }
