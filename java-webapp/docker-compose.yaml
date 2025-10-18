@@ -16,7 +16,7 @@ services:
       - ./db-schema.sql:/docker-entrypoint-initdb.d/db-script.sql
 
   webapp:
-    image: webapp:1.0.3
+    image: webapp:1.0
     container_name: tomcat_server
     ports:
       - "80:8080" 
