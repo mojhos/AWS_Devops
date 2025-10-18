@@ -1,8 +1,7 @@
 -- Create database
-CREATE DATABASE IF NOT EXISTS db-name###;
-
+CREATE DATABASE IF NOT EXISTS webapp_db;
 -- Use the database
-USE db-name###;
+USE webapp_db;
 
 -- Create messages table
 CREATE TABLE IF NOT EXISTS messages (
@@ -19,6 +18,6 @@ INSERT INTO messages (message) VALUES
     ('Welcome to the scalable web application!');
 
 -- Create a database user (optional, for security)
-CREATE USER 'your-username###'@'localhost' IDENTIFIED BY 'your-password###';
-GRANT ALL PRIVILEGES ON db-name###.* TO 'your-username###'@'localhost';
+CREATE USER 'webapp_user'@'*' IDENTIFIED BY 'pasword';
+GRANT ALL PRIVILEGES ON webapp_db.* TO 'webapp_user'@'*';
 FLUSH PRIVILEGES;

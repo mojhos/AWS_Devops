@@ -11,8 +11,8 @@ public class DatabaseConfig {
     private static final String DB_PORT = System.getenv().getOrDefault("DB_PORT", "3306");
     private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "webapp_db");
     private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "webapp_user");
-    private static final String DB_PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "123&awscloud");
-    private static final String DB_URL = String.format("jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC", DB_HOST, DB_PORT, DB_NAME);
+    private static final String DB_PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "password");
+    private static final String DB_URL = String.format("jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true", DB_HOST, DB_PORT, DB_NAME);
     
     // Connection pool settings
     private static final int MAX_POOL_SIZE = 10;
