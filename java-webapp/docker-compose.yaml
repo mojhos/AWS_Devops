@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0 # Using a specific version of MySQL for stability
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 123&awscloud # Replace with a strong password
+      MYSQL_DATABASE: webapp_db # Replace with your desired database name
+      MYSQL_USER: webapp_user # Optional: Create a specific user
+      MYSQL_PASSWORD: 123&awscloud # Optional: Password for the specific user
+    ports:
+      - "3306"
+    volumes:
+      - sql-data:/var/lib/mysql # Mount the named volume for data persistence
+
+  webapp:
+    image: webapp:1.0.0 # Using a specific Tomcat 9 image with Java 11
+    container_name: tomcat_server
+    ports:
+      - "80:8080" # Map host port 8080 to container port 8080
+    depends_on:
+      - db # Ensure the database service starts before Tomcat
+    environment:
+      DB_HOST: db 
+
+volumes:
+  sql-data: # Define the named volume
