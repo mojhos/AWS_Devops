@@ -189,6 +189,62 @@ Always run `terraform destroy` after testing to avoid charges.
 
 ---
 
+### 🧠 **Testing Auto Scaling and Custom Parameters**
+
+You can easily modify scaling and environment parameters by editing the **`terraform.tfvars`** file before running `terraform apply`.
+
+Example:
+
+```hcl
+# terraform.tfvars
+db_user     = "webapp_user"
+db_pass     = "complex_password"
+asg_min     = 2
+asg_desired = 3
+asg_max     = 6
+```
+
+These values control the **Auto Scaling Group** minimum, desired, and maximum instance counts, and define database credentials used in **AWS SSM Parameter Store**.
+
+---
+
+#### 🧪 **Testing the Scalability Feature**
+
+After deployment, you can simulate high CPU usage on one of the EC2 instances to verify that **auto-scaling** works as expected.
+
+1. **Connect** to one of your EC2 instances via AWS Systems Manager Session Manager or SSH.
+
+2. Run the following command **twice** to generate CPU load:
+
+   ```bash
+   yes > /dev/null &
+   yes > /dev/null &
+   ```
+
+   This will push CPU utilization close to 100%.
+
+3. Monitor **CloudWatch → Metrics → Auto Scaling Group → CPUUtilization**.
+   After a few minutes, the ASG should detect high CPU load and **launch additional instances** automatically (up to your defined `asg_max`).
+
+4. To end the test, stop the processes:
+
+   ```bash
+   pkill yes
+   ```
+
+   CPU usage will drop, and after the cooldown period, ASG will **scale back down** to your desired capacity.
+
+---
+
+✅ **What this shows**
+
+* Terraform parameters directly control infrastructure flexibility.
+* Auto Scaling Group reacts dynamically to CPU load.
+* CloudWatch triggers scaling events automatically without manual intervention.
+* The system demonstrates true **elastic scalability** and **self-healing** in practice.
+
+---
+
 ## 🧩 **Key Takeaways**
 
 ✅ End-to-end cloud-native web app with frontend, app, and DB tiers
