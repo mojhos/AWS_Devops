@@ -1,27 +1,32 @@
-# Scalable Web Application on AWS
 
-A production-grade Java web application with MySQL database integration, designed for deployment on AWS infrastructure.
 
-## 📋 Project Overview
+# 🌐 Java Web Application — Setup Guide
 
-This is a fully automated, production-grade web application that allows users to:
-- View application architecture information
-- Submit messages through a web form
-- View all submitted messages from the database
+This guide walks you through **three simple ways** to run and deploy this Java web application:
 
-## 🏗️ Architecture
+1. 🐳 Using **Docker Compose** (recommended — easiest and fastest)
+2. ⚙️ Installing **manually** (for educational or debugging purposes)
+3. 🤖 Automating everything using **Jenkins CI/CD** + **AWS ECR**
 
-- **Frontend**: JSP pages with HTML/CSS
-- **Backend**: Java Servlets
-- **Database**: MySQL (Amazon RDS compatible)
-- **Build Tool**: Maven
-- **Server**: Compatible with Tomcat, Jetty, or any Java EE container
+---
 
-## 📁 Project Structure
+## 🧭 Overview
+
+This project is a simple **Java Servlet + JSP web application** connected to a **MySQL database**, packaged with **Maven**, and deployable with **Docker** or **Jenkins**.
+
+You can:
+
+* Run the app locally with one command using Docker Compose
+* Install manually on any Linux server with MySQL and Tomcat
+* Automate packaging and deployment using Jenkins pipelines
+
+---
+
+## 📂 Project Structure
 
 ```
-scalable-web-app/
-├── src/
+java-webapp/
+├── src/                        # Java servlet source code
 │   └── main/
 │       ├── java/
 │       │   └── com/
@@ -46,171 +51,236 @@ scalable-web-app/
 │           │   │   ├── data.jsp
 │           │   │   └── error.jsp
 │           │   └── web.xml
-│           └── META-INF/
-├── pom.xml
-└── db-schema.sql
+│           └── META-INF/                     
+├── pom.xml                     # Maven build configuration
+├── db-schema.sql               # Database schema & sample data
+├── Dockerfile                  # Docker image definition
+├── docker-compose.yaml         # Multi-container setup (app + MySQL)
+├── Jenkinsfile                 # Jenkins pipeline script
+├── groovy.script               # Functions to use in jenkins file
+└── README.md                   # You're reading it :)
 ```
 
-## 🚀 Prerequisites
+---
 
-- Java JDK 11 or higher
-- Apache Maven 3.6+
-- MySQL 8.0+
-- Apache Tomcat 9.0+ (or similar servlet container)
+## 🧱 Requirements
 
-## 💾 Database Setup
+To use any of the following methods, make sure you have:
 
-1. **Install MySQL** (if not already installed)
-    Be sure that mysql server is accessible on it's IP address
+* **Java 11+**
+* **Maven 3.6+**
+* **Docker & Docker Compose**
+* **Git** (optional for Jenkins)
+* **MySQL or Dockerized MySQL**
 
-2. **Run the database schema**:
+---
+
+# 🐳 1️⃣ Run Application with Docker Compose (Recommended)
+
+This is the simplest and fastest way to get your app running.
+
+### 🧩 Steps
+
+1. **Build the Java package**
+
+   ```bash
+   mvn clean package
+   ```
+
+2. **Build the Docker image locally**
+
+   ```bash
+   docker build -t webapp:1.0 .
+   ```
+
+3. **Run the app with Docker Compose**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Access your application**
+
+   * Web App: [http://localhost:8080](http://localhost:8080)
+   * MySQL: available on `localhost:3306`
+     (user: `webapp_user`, password: `password`)
+
+5. **Stop everything**
+
+   ```bash
+   docker-compose down
+   ```
+
+---
+
+# ⚙️ 2️⃣ Manual Installation (Without Docker)
+
+This section shows how to manually install and run the app on any Linux server (e.g., Ubuntu).
+
+---
+
+## 🧩 Step 1: Install MySQL Server
+
+Run the following commands to install and configure MySQL:
+
 ```bash
-mysql -u root -p < db-schema.sql
+sudo apt update
+sudo apt install -y mysql-server
+sudo systemctl start mysql
+sudo systemctl enable mysql
 ```
 
-3. **Update database credentials** in `src/main/java/com/webapp/config/DatabaseConfig.java`:
-```java
-private static final String DB_URL = "jdbc:mysql://mysql_ip:3306/**put-your-db-name-here**?useSSL=false&serverTimezone=UTC";
-private static final String DB_USER = "root";
-private static final String DB_PASSWORD = "your_password";
-```
+Then secure your MySQL installation:
 
-For AWS RDS, update the DB_URL to your RDS endpoint:
-```java
-private static final String DB_URL = "jdbc:mysql://your-rds-endpoint.region.rds.amazonaws.com:3306/**put-your-db-name-here**?useSSL=true&serverTimezone=UTC";
-```
-
-## 🔨 Building the Project
-
-1. **Clone or download the project**
-
-2. **Navigate to project directory**:
 ```bash
-cd java-webapp
+sudo mysql_secure_installation
 ```
 
-3. **Build with Maven**:
+---
+
+### 🧩 Step 2: Create a Database and Import the Schema
+
+Log in to MySQL and import the schema file to create database and user:
+
 ```bash
-mvn clean package
+sudo mysql -u root -p < db-schema.sql
 ```
+    Be sure that mysql server is accessible on it's IP address( check the /etc/mysql/mysql.conf.d/mysqld.cnf ==> "bind-address = 0.0.0.0" )
 
-This will create a WAR file in the `target/` directory: `webapp.war`
 
-## 🖥️ Deployment
+## 🧩 Step 3: Install Apache Tomcat 9
 
-### Local Tomcat Deployment
+Run these commands to install Tomcat 9:
 
-1. **Copy WAR file to Tomcat**:
 ```bash
-cp target/webapp.war /path/to/tomcat/webapps/
+sudo apt install -y wget
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.90/bin/apache-tomcat-9.0.90.tar.gz
+sudo mkdir /opt/tomcat
+sudo tar xzvf apache-tomcat-9.0.90.tar.gz -C /opt/tomcat --strip-components=1
+sudo chmod +x /opt/tomcat/bin/*.sh
 ```
 
-2. **Start Tomcat**:
+Start Tomcat:
+
 ```bash
-cd /path/to/tomcat/bin
-./catalina.sh run
+cd /opt/tomcat/bin
+sudo ./startup.sh
 ```
 
-3. **Access the application**:
-```
-http://localhost:8080/webapp/
-```
+---
 
-### AWS Elastic Beanstalk Deployment
+## 🧩 Step 4: Deploy the Application
 
-1. **Install AWS CLI and EB CLI**
+1. First, build your `.war` package using Maven:
 
-2. **Initialize Elastic Beanstalk**:
+   ```bash
+   mvn clean package
+   ```
+
+2. Copy the generated WAR file to Tomcat’s webapps directory:
+
+   ```bash
+   sudo cp target/webapp.war /opt/tomcat/webapps/
+   ```
+
+3. Restart Tomcat:
+
+   ```bash
+   sudo ./shutdown.sh
+   sudo ./startup.sh
+   ```
+
+4. Open your browser and visit:
+
+   ```
+   http://<your-server-ip>:8080/webapp
+   ```
+
+---
+
+# 🤖 3️⃣ Automated Deployment with Jenkins CI/CD
+
+You can automate **building**, **Dockerizing**, and **pushing** your app to **AWS ECR** using Jenkins.
+
+---
+
+## 🧩 Step 1: Install Jenkins
+
+For Ubuntu:
+
 ```bash
-eb init
+sudo apt update
+sudo apt install -y openjdk-11-jdk
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt update
+sudo apt install -y jenkins
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
 ```
 
-3. **Create environment**:
+Then open Jenkins at [http://localhost:8080](http://localhost:8080)
+and complete the setup wizard.
+
+---
+
+## 🧩 Step 2: Configure Jenkins Environment
+
+Install these tools on the Jenkins server:
+
 ```bash
-eb create production-env
+sudo apt install -y docker.io awscli git
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
 ```
 
-4. **Deploy**:
+Ensure your Jenkins server has AWS credentials configured:
+
 ```bash
-eb deploy
+sudo su - jenkins
+aws configure
 ```
 
-### AWS EC2 Manual Deployment
+---
 
-1. **Launch EC2 instance** (Amazon Linux 2 or Ubuntu)
+## 🧩 Step 3: Create a Pipeline
 
-2. **Install Java and Tomcat**:
-```bash
-sudo yum install java-11-openjdk-devel
-sudo yum install tomcat
-```
+1. In Jenkins, click **New Item → Pipeline**
+2. Connect your pipeline to your **Git repository**
+3. Select **“Pipeline script from SCM”**
+4. Choose **Git**, and enter your repo URL
+5. Jenkins will use the `Jenkinsfile` and `script.groovy` from your project
 
-3. **Upload and deploy WAR file**:
-```bash
-scp target/webapp.war ec2-user@your-ec2-ip:/var/lib/tomcat/webapps/
-```
+---
 
-4. **Start Tomcat**:
-```bash
-sudo systemctl start tomcat
-```
+## 🧩 Step 4: What the Jenkins Pipeline Does
 
-## 🔧 Configuration
+Once triggered (automatically or manually), it will:
 
-### Database Connection Pool
+1. Pull the latest code from GitHub
+2. Run `mvn clean package` to create the WAR file
+3. Build a Docker image from your Dockerfile
+4. Push the Docker image to your **AWS ECR** repository
+5. Optionally trigger Terraform or EC2 update to redeploy the new version
 
-Modify `DatabaseConfig.java` to configure connection pooling:
-```java
-private static final int MAX_POOL_SIZE = 10;
-```
+---
 
-### Session Timeout
+## 🧩 Step 5: Automate on Code Push
 
-Modify `web.xml` to change session timeout (in minutes):
-```xml
-<session-timeout>30</session-timeout>
-```
+You can connect Jenkins with your Git account to automatically run the pipeline when new commits are pushed to your **main branch**.
 
-## 📊 Application Endpoints
+* Go to your Git repo settings → Webhooks
+* Add Jenkins webhook URL:
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Home page with architecture description |
-| `/input` | GET | Display input form |
-| `/input` | POST | Submit message to database |
-| `/data` | GET | View all messages from database |
+  ```
+  http://<your-jenkins-server>:8080/github-webhook/
+  ```
+* Choose event: “Just the push event”
+* Save
 
-## 🔒 Security Considerations
+Now, each code push triggers the pipeline to build and deploy a new Docker image automatically 🚀
 
-1. **Update database credentials** - Never commit passwords to version control
-2. **Use environment variables** for sensitive data
-3. **Enable SSL/TLS** for production deployments
-4. **Configure AWS WAF** for web application firewall protection
-5. **Use AWS RDS encryption** at rest and in transit
-6. **Implement input validation** and sanitization
-7. **Use prepared statements** (already implemented) to prevent SQL injection
-
-## 📦 Dependencies
-
-All dependencies are managed through Maven (`pom.xml`):
-
-- **javax.servlet-api** (4.0.1) - Servlet support
-- **mysql-connector-java** (8.0.33) - MySQL database driver
-- **jstl** (1.2) - JSP Standard Tag Library
-- **gson** (2.10.1) - JSON processing
-
-## 🧪 Testing
-
-To test the application locally:
-
-1. Ensure MySQL is running
-2. Create the database using `db-schema.sql`
-3. Build the project: `mvn clean package`
-4. Deploy to local Tomcat
-5. Access `http://localhost:8080/webapp/`
-6. Test the input form and data viewing functionality
-
-## 🐛 Troubleshooting
+---
 
 ### Database Connection Error
 - Check MySQL is running: `sudo systemctl status mysql`
@@ -234,57 +304,25 @@ To test the application locally:
 - Verify Java version: `java -version`
 - Ensure port 8080 is not in use: `netstat -an | grep 8080`
 
-## 📝 AWS RDS Configuration
+---
 
-For Amazon RDS MySQL:
+# ✅ Summary
 
-1. Create RDS MySQL instance in AWS Console
-2. Configure security group to allow inbound traffic on port 3306
-3. Note the endpoint, username, and password
-4. Update `DatabaseConfig.java` with RDS endpoint
-5. Enable Multi-AZ for high availability
-6. Set up read replicas for load balancing
-
-## 🔄 Continuous Integration/Deployment
-
-### Using AWS CodePipeline
-
-1. Store code in AWS CodeCommit, GitHub, or Bitbucket
-2. Create CodeBuild project with `buildspec.yml`
-3. Set up CodePipeline to automate build and deployment
-4. Deploy to Elastic Beanstalk or EC2
-
-### Sample buildspec.yml
-```yaml
-version: 0.2
-phases:
-  build:
-    commands:
-      - mvn clean package
-artifacts:
-  files:
-    - target/webapp.war
-```
-
-## 📈 Monitoring and Logging
-
-- **Application Logs**: Check Tomcat logs in `/logs/` directory
-- **AWS CloudWatch**: Monitor application metrics and logs
-- **Database Monitoring**: Use RDS Performance Insights
-- **AWS X-Ray**: Implement distributed tracing
-
-## 🤝 Contributing
-
-Feel free to submit issues, fork the repository, and create pull requests for any improvements.
-
-## 📄 License
-
-This project is open source and available for educational and commercial use.
-
-## 📧 Support
-
-For issues and questions, please check the troubleshooting section or create an issue in the repository.
+| Deployment Method  | Description                           | Best For                 |
+| ------------------ | ------------------------------------- | ------------------------ |
+| **Docker Compose** | Quick local setup (includes MySQL)    | Beginners, local testing |
+| **Manual Setup**   | Classic install (MySQL + Tomcat)      | Servers without Docker   |
+| **Jenkins CI/CD**  | Full automation (build, push, deploy) | Production / AWS users   |
 
 ---
 
-Built with ☕ Java and ❤️ for AWS scalability
+## 🧾 License
+
+This project is open source and free to use under the MIT License.
+
+---
+
+## ❤️ Thank you for your attention
+
+Built with ☕ **Java**, 🐳 **Docker**, 🤖 **Jenkins**, and ☁️ **AWS**
+
