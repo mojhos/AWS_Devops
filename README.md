@@ -1,4 +1,3 @@
----
 
 # 🌍 **Scalable Web Application with Auto-Healing on AWS**
 
