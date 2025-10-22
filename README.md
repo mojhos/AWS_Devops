@@ -3,13 +3,13 @@
 # 🌍 **Scalable Web Application with Auto-Healing on AWS**
 
 **Author:** *Seyed Mojtaba Hosseini*
-**Graduate Project — Monroe University, Computer Science (DevOps & Automation)*
+**Master's Project — Monroe University, Computer Science*
 
 ---
 
 ## 👋 **Introduction**
 
-Hi — I’m **Seyed Mojtaba Hosseini**, a Master student of Computer Science passionate about **cloud infrastructure, DevOps automation, and scalable systems**.
+Hi — I’m **Seyed Mojtaba Hosseini**, a Computer Science Master's student, passionate about **cloud infrastructure, DevOps automation, and scalable systems**.
 This project  **“Scalable Web Application with Auto-Healing on AWS”**  was built as my graduate-level DevOps portfolio project to demonstrate:
 
 * Designing secure, fault-tolerant, production-grade infrastructure on **AWS**
