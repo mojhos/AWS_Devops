@@ -134,9 +134,6 @@ aws-infra/
 
 ---
 
-> “To test the scalability of this application in AWS, see the *‘Testing Auto Scaling’* section in the main project README.”
-
----
 
 ## 🔐 Security Notes
 
