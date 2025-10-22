@@ -3,7 +3,6 @@
 # 🌍 **Scalable Web Application with Auto-Healing on AWS**
 
 **Author:** *Seyed Mojtaba Hosseini*
-**Master's Project — Monroe University, Computer Science*
 
 ---
 
@@ -209,7 +208,6 @@ MIT License — Free for educational and demonstration use.
 ## ❤️ **Acknowledgment**
 
 Created by **Seyed Mojtaba Hosseini**
-**Master's Project: “Scalable Web Application with Auto-Healing on AWS”**
 Built with ☕ Java  🐳 Docker  ☁️ AWS  🤖 Jenkins  💠 Terraform
 
 ---
