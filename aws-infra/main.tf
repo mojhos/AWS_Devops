@@ -55,8 +55,8 @@ resource "aws_route_table_association" "public_assoc" {
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat.id
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
   }
 }
 resource "aws_route_table_association" "private_assoc" {
@@ -265,13 +265,23 @@ resource "aws_launch_template" "lt" {
   iam_instance_profile { name = aws_iam_instance_profile.ec2_profile.name }
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size           = 30
+      volume_type           = "gp3"
+      delete_on_termination = true
+    }
+  }
+
   user_data = base64encode(<<-EOF
     #!/bin/bash
     set -euxo pipefail
 
     dnf update -y
-    dnf install -y docker awscli
+    dnf install -y docker awscli amazon-ssm-agent
     systemctl enable --now docker
+    systemctl enable --now amazon-ssm-agent
 
     DB_NAME=$(aws ssm get-parameter --name "${aws_ssm_parameter.db_name.name}" --region ${var.region} --query 'Parameter.Value' --output text)
     DB_USER=$(aws ssm get-parameter --name "${aws_ssm_parameter.db_user.name}" --region ${var.region} --query 'Parameter.Value' --output text)
@@ -322,4 +332,3 @@ resource "aws_autoscaling_policy" "cpu_target" {
     target_value = 60
   }
 }
-
