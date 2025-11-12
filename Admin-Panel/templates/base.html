@@ -42,4 +42,17 @@
   {% block content %}{% endblock %}
 </div>
 </body>
+<!-- Bootstrap JS bundle (for dismissible alerts, modals, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Fallback dismiss if Bootstrap JS fails
+  document.addEventListener("click", e => {
+    if (e.target.classList.contains("btn-close")) {
+      const alert = e.target.closest(".alert");
+      if (alert) alert.remove();
+    }
+  });
+</script>
+
 </html>
