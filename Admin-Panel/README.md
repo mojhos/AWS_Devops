@@ -13,7 +13,7 @@ A lightweight web UI to:
 ## Prereqs
 - Ubuntu host
 - Terraform, Git installed and on PATH
-- Python 3.10+
+- Python 3.10+ & Python3.*-venv installed
 - AWS credentials available on the machine (env vars, shared config, or SSO)
 - IAM permissions sufficient for your infra + CloudWatch/ASG/EC2/SSM
 
