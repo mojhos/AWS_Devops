@@ -4,14 +4,14 @@ A lightweight web UI to:
 - Clone a public GitHub repo containing Terraform code
 - Render a form from `variables.tf` (defaults respected)
 - Write `terraform.tfvars`
-- Run `terraform init/plan/apply/destroy` with **real-time logs (SSE)**
+- Run `terraform init/plan/apply/destroy/state` with **real-time logs 
 - Show Terraform outputs (e.g., ALB DNS)
 - Monitor EC2/ASG metrics via CloudWatch
 - Manually scale ASG desired capacity
 - Run SSM RunCommand on instances (shell script)
 
 ## Prereqs
-- Ubuntu host (outside AWS is fine)
+- Ubuntu host
 - Terraform, Git installed and on PATH
 - Python 3.10+
 - AWS credentials available on the machine (env vars, shared config, or SSO)
@@ -21,9 +21,9 @@ A lightweight web UI to:
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env  # then edit
+cp .env.example .env  # then edit with your own configuration
 export FLASK_APP=app.py
-flask run --reload --port 8000
+flask run --host=0.0.0.0 --port=8000
 ```
 
 Open: http://localhost:8000
