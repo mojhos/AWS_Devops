@@ -1,0 +1,7 @@
+Flask==3.0.3
+Flask-Login==0.6.3
+python-dotenv==1.0.1
+boto3==1.34.158
+botocore==1.34.158
+python-hcl2==4.3.5
+ansi2html>=1.9.1

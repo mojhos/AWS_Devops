@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Terraform Outputs</h3>
+{% if outputs %}
+  <table class="table table-bordered">
+    <thead><tr><th>Key</th><th>Value</th></tr></thead>
+    <tbody>
+      {% for k, v in outputs.items() %}
+        <tr><td>{{ k }}</td><td><code>{{ v }}</code></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="text-muted">No outputs found. Did you apply yet?</p>
+{% endif %}
+{% endblock %}

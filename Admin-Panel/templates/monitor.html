@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Monitor</h3>
+
+<h5>Auto Scaling Groups</h5>
+<table class="table table-striped">
+  <thead><tr><th>Name</th><th>Desired</th><th>Min</th><th>Max</th><th>Instances</th><th>Action</th></tr></thead>
+  <tbody>
+  {% for g in asgs %}
+    <tr>
+      <td>{{ g.AutoScalingGroupName }}</td>
+      <td>{{ g.DesiredCapacity }}</td>
+      <td>{{ g.MinSize }}</td>
+      <td>{{ g.MaxSize }}</td>
+      <td>{{ g.Instances|length }}</td>
+      <td>
+        <form method="post" action="{{ url_for('asg_scale') }}" class="d-flex">
+          <input type="hidden" name="asg_name" value="{{ g.AutoScalingGroupName }}">
+          <input class="form-control form-control-sm" style="width:90px" name="desired" type="number" min="0" value="{{ g.DesiredCapacity }}">
+          <button class="btn btn-sm btn-primary ms-2">Set</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h5 class="mt-4">Instances</h5>
+<table class="table table-bordered">
+  <thead><tr><th>InstanceId</th><th>State</th><th>Type</th><th>CPU (last 2h)</th><th>SSM</th></tr></thead>
+  <tbody>
+  {% for r in instances %}
+    {% for i in r %}{% endfor %}
+  {% endfor %}
+  {% for i in instances %}
+    <tr>
+      <td>{{ i.InstanceId }}</td>
+      <td>{{ i.State.Name }}</td>
+      <td>{{ i.InstanceType }}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-primary" onclick="loadCPU('{{ i.InstanceId }}')">Load</button>
+	<canvas id="cpu-{{ i.InstanceId }}" width="300" height="100"></canvas>
+      </td>
+      <td>
+        <form onsubmit="return runCmd(event, '{{ i.InstanceId }}');">
+          <div class="input-group input-group-sm">
+            <input class="form-control" placeholder="bash command (RunCommand)" name="command">
+            <button class="btn btn-success">Run</button>
+          </div>
+        </form>
+        <pre id="ssm-{{ i.InstanceId }}" class="small" style="max-height:180px; overflow:auto;"></pre>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<script>
+async function loadCPU(instanceId) {
+  const resp = await fetch(`/metrics/cpu/${instanceId}`);
+  const data = await resp.json();
+
+  const points = data.Datapoints.sort((a,b) => new Date(a.Timestamp) - new Date(b.Timestamp));
+  const labels = points.map(p => new Date(p.Timestamp).toLocaleTimeString());
+  const values = points.map(p => p.Average);
+
+  const ctx = document.getElementById('cpu-' + instanceId).getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'CPU (%)',
+        data: values,
+        borderColor: '#2ecc71',
+        backgroundColor: 'rgba(46,204,113,0.2)',
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      scales: { y: { min: 0, max: 100 } },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+function runCmd(e, instanceId) {
+  e.preventDefault();
+  const input = e.target.querySelector('input[name="command"]');
+  fetch('/ssm/run', {
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: `instance_id=${encodeURIComponent(instanceId)}&command=${encodeURIComponent(input.value)}`
+  }).then(r => r.json()).then(data => {
+    const out = document.getElementById(`ssm-${instanceId}`);
+    out.textContent = "Command sent. Polling output...";
+    const poll = () => {
+      fetch(`/ssm/output/${data.command_id}/${data.instance_id}`)
+        .then(r => r.text())
+        .then(txt => {
+          out.textContent = txt;
+          if (!/Success|Failed|TimedOut|Cancelled/.test(txt)) setTimeout(poll, 3000);
+        });
+    };
+    setTimeout(poll, 2000);
+  });
+  return false;
+}
+</script>
+
+{% endblock %}
